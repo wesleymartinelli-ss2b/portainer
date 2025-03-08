@@ -1,0 +1,23 @@
+docker run -d \
+--name=portainer \
+--restart=always \
+-p 8000:8000 \
+-p 9000:9000 \
+-p 9443:9443 \
+-v /var/run/docker.sock:/var/run/docker.sock \
+-v portainer_data:/data \
+-v /etc/localtime:/etc/localtime:ro \
+--log-opt max-size=10m \
+--log-opt max-file=3 \
+--network=docker_net \
+--label "traefik.enable=true" \
+--label "traefik.http.routers.portainer.rule=Host(\`portainer.ss2b.com.br\`)" \
+--label "traefik.http.routers.portainer.tls=true" \
+--label "traefik.http.routers.portainer.tls.certresolver=lets-encrypt" \
+--label "traefik.http.services.portainer.loadbalancer.server.port=9000" \
+--label "traefik.docker.network=docker_net" \
+--memory-reservation=32m \
+--memory=48m \
+--cpus="0.3" \
+--cpu-shares=512 \
+portainer/portainer-ce:2.26.1-alpine
